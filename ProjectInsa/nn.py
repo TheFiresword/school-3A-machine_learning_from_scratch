@@ -7,6 +7,9 @@ df = pd.read_csv("iris.data.csv", header=None, names=['sepal_length', 'sepal_wid
 df.describe()
 
 # %%
+#===========================================
+# Visualisation du dataset
+#===========================================
 real_set = np.array(df)
 size = len(real_set)
 for e in range(0, 2):
@@ -25,6 +28,9 @@ for e in range(0, 2):
 
 
 # %%
+#===========================================
+# Création puis Entrainement puis Test du modèle
+#===========================================
 real_set = np.array(pd.read_csv("iris.data.csv"))
 np.random.shuffle(real_set)
 
@@ -33,11 +39,12 @@ X_set = real_set[:,:-1]
 Y_set = real_set[:,-1]
 X_set = np.hstack((X_set, np.ones(len(Y_set)).reshape((-1, 1))))
 
-_train_set = X_set[:size//2, :]
-_train_y = Y_set[:size//2]
+train_and_validation_size = int(size*(70+15)/100)
+_train_set = X_set[:train_and_validation_size, :]
+_train_y = Y_set[:train_and_validation_size]
 
-_test_set = X_set[size//2: , :]
-_test_y = Y_set[size//2:]
+_test_set = X_set[train_and_validation_size: , :]
+_test_y = Y_set[train_and_validation_size:]
 
 
 iris_model = NetModel(input_shape=(4, ), usage="MultiClassification")
@@ -45,12 +52,15 @@ iris_model.add_layer(Dense(4, activation_function="sigmoid"))
 
 iris_model.compile(3, categories=['Iris-setosa','Iris-versicolor', 'Iris-virginica'])
 
-iris_model.train(_train_set, _train_y,"cross_entropy", nepochs= 500, learning_rate=0.01)
+iris_model.train(_train_set, _train_y,"cross_entropy", nepochs= 500, learning_rate=0.01, validation_per=15/(70+15))
 iris_model.display_losses()
 z = iris_model.predict_sample(_test_set,_test_y )
 
 # %%
-best_model = load("98accuratefinal")
+#===========================================
+# Mon meilleur modèle: 100% de précision
+#===========================================
+best_model = load("./perfectmodel")
 best_model.draw()
 a = best_model.predict_sample(_test_set,_test_y )
 

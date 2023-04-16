@@ -315,7 +315,6 @@ class NetModel:
                 # -------------------------------------------------------------------#
                 self.backpropagate(learning_rate)
             
-            rd_record_in_valdt = random.randint(0, size-1)
             this_epoch_validation_losses_history = []
             for count in range(size):
                 validation_result = self.predict_unique(x = validation_X[count], display_message=False, rt_real_prediction=False)
